@@ -31,7 +31,7 @@
     </section>
 
     <section class="mb-5">
-      <h3>🤖 Telegram-бот HelpAI</h3>
+      <h3>🤖 Telegram-бот ImPass</h3>
       <p>
         У нас также есть удобный <strong>Telegram-бот</strong>, который
         помогает:
