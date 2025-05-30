@@ -1,6 +1,6 @@
 <template>
   <main class="container py-5">
-    <h1 class="mb-4 text-center">О платформе HelpAI</h1>
+    <h1 class="mb-4 text-center">О платформе ImPass</h1>
 
     <p class="lead text-center mb-5">
       Наша платформа помогает школьникам и абитуриентам выбрать профессию,
