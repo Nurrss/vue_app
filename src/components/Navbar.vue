@@ -1,7 +1,7 @@
 <template>
   <nav class="navbar navbar-expand-lg bg-dark navbar-dark py-3">
     <div class="container-fluid">
-      <router-link class="navbar-brand" to="/">ProfAI</router-link>
+      <router-link class="navbar-brand" to="/">ImPass</router-link>
       <button
         class="navbar-toggler"
         type="button"
