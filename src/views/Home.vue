@@ -9,7 +9,7 @@
         </p>
         <div>
           <a
-            href="https://t.me/your_bot"
+            href="https://t.me/tanuAhacki_bot"
             target="_blank"
             class="btn btn-primary btn-lg mx-2 btn-hover"
             >Начать в Telegram</a
@@ -53,7 +53,7 @@
       </div>
     </section>
     <!-- Footer -->
-    <footer class="text-center py-3 bg-dark text-light">
+    <footer class="text-center py-5 bg-dark text-light">
       © 2025 Tanu AI. Все права защищены.
     </footer>
   </main>

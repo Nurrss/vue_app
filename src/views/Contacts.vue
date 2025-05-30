@@ -97,13 +97,12 @@ export default {
       this.loading = true;
 
       try {
-        // Здесь можно сделать реальный запрос на сервер
-        // await axios.post("/api/contact", this.form);
-
-        // Симуляция успешной отправки
+        // Симуляция успешной отправки (здесь можно добавить реальный запрос)
         await new Promise((resolve) => setTimeout(resolve, 1500));
 
         this.successMessage = "Спасибо! Ваше сообщение отправлено.";
+
+        // Очистка формы
         this.form.name = "";
         this.form.email = "";
         this.form.message = "";

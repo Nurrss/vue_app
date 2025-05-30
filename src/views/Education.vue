@@ -1,145 +1,168 @@
 <template>
   <main class="container py-5">
-    <h1 class="mb-4 text-center">Профессии</h1>
-    <p class="lead text-center mb-5">
-      Выберите профессию, которая вам интересна, и получите полезную информацию
-      о ней.
-    </p>
+    <h1 class="mb-4 text-center">Образование по городам</h1>
 
-    <!-- Спиннер загрузки -->
-    <div v-if="loading" class="text-center">
-      <div class="spinner-border text-primary" role="status">
-        <span class="visually-hidden">Загрузка...</span>
+    <!-- Город -->
+    <div class="mb-4">
+      <h4>Выберите город:</h4>
+      <div class="row">
+        <div
+          class="col-6 col-md-4 col-lg-3 mb-3"
+          v-for="city in cities"
+          :key="city.id"
+        >
+          <button
+            class="btn btn-outline-primary w-100"
+            @click="selectCity(city.id)"
+          >
+            {{ city.name }}
+          </button>
+        </div>
       </div>
     </div>
 
-    <!-- Содержимое -->
-    <div v-else>
-      <!-- Нет профессий -->
-      <div
-        v-if="professions.length === 0"
-        class="alert alert-warning text-center"
-      >
-        Пока нет доступных профессий.
-      </div>
-
-      <!-- Список профессий -->
-      <div class="row row-cols-1 row-cols-md-2 g-4">
-        <div
-          v-for="profession in professions"
-          :key="profession._id"
-          class="col"
+    <!-- Университеты -->
+    <div v-if="selectedCity" class="mb-4">
+      <h4>Университеты в {{ getCityName(selectedCity) }}</h4>
+      <ul class="list-group">
+        <li
+          v-for="univ in filteredUniversities"
+          :key="univ.id"
+          class="list-group-item d-flex justify-content-between align-items-center"
         >
-          <div class="card shadow-sm">
-            <div class="card-body d-flex flex-column">
-              <h5 class="card-title">{{ profession.name }}</h5>
+          {{ univ.name }}
+          <button
+            class="btn btn-sm btn-secondary"
+            @click="selectUniversity(univ.id)"
+          >
+            Специальности
+          </button>
+        </li>
+      </ul>
+    </div>
 
-              <p class="card-text flex-grow-1" v-if="profession.course.length">
-                {{ profession.course[0].description }}
-              </p>
-              <p v-else class="card-text flex-grow-1">
-                Описание курса пока отсутствует.
-              </p>
+    <!-- Специальности -->
+    <div v-if="selectedUniversity" class="mb-4">
+      <h4>Специальности — {{ getUniversityName(selectedUniversity) }}</h4>
+      <ul class="list-group">
+        <li
+          v-for="spec in filteredSpecialties"
+          :key="spec.id"
+          class="list-group-item d-flex justify-content-between align-items-center"
+        >
+          {{ spec.name }}
+          <button
+            class="btn btn-sm btn-outline-info"
+            @click="selectSpecialty(spec.id)"
+          >
+            Экзамены
+          </button>
+        </li>
+      </ul>
+    </div>
 
-              <!-- Кнопка раскрытия roadmap -->
-              <button
-                v-if="profession.roadmap && profession.roadmap.length"
-                @click="toggleRoadmap(profession._id)"
-                class="btn btn-outline-secondary btn-sm mb-2"
-              >
-                {{
-                  isExpanded(profession._id)
-                    ? "Скрыть план"
-                    : "Показать план развития"
-                }}
-              </button>
-
-              <!-- Roadmap -->
-              <ul
-                v-if="
-                  profession.roadmap &&
-                  profession.roadmap.length &&
-                  isExpanded(profession._id)
-                "
-                class="list-group list-group-flush mb-2"
-              >
-                <li
-                  v-for="(step, index) in profession.roadmap"
-                  :key="index"
-                  class="list-group-item"
-                >
-                  {{ step }}
-                </li>
-              </ul>
-
-              <!-- Ссылка на курс -->
-              <a
-                v-if="profession.course[0]?.link"
-                :href="profession.course[0].link"
-                class="btn btn-primary mt-auto"
-                target="_blank"
-                rel="noopener"
-              >
-                Подробнее
-              </a>
-              <span v-else class="text-muted mt-auto"
-                >Информация скоро появится</span
-              >
-            </div>
-          </div>
-        </div>
-      </div>
+    <!-- Экзамены -->
+    <div v-if="selectedSpecialty" class="mb-4">
+      <h4>
+        Экзамены для поступления — {{ getSpecialtyName(selectedSpecialty) }}
+      </h4>
+      <ul class="list-group">
+        <li
+          v-for="exam in filteredExams"
+          :key="exam.id"
+          class="list-group-item"
+        >
+          {{ exam.name }}
+        </li>
+      </ul>
     </div>
   </main>
 </template>
 
 <script>
-import axios from "axios";
-
 export default {
   name: "Education",
   data() {
     return {
-      professions: [],
-      loading: false,
-      expanded: null, // ID раскрытой карточки
+      selectedCity: null,
+      selectedUniversity: null,
+      selectedSpecialty: null,
+
+      // Статичные данные
+      cities: [
+        { id: "1", name: "Алматы" },
+        { id: "2", name: "Астана" },
+        { id: "3", name: "Шымкент" },
+        { id: "4", name: "Караганда" },
+        { id: "5", name: "Актобе" },
+      ],
+      universities: [
+        { id: "u1", name: "КазНУ", cityId: "1" },
+        { id: "u2", name: "КБТУ", cityId: "1" },
+        { id: "u3", name: "ENU", cityId: "2" },
+        { id: "u4", name: "ЮКГУ", cityId: "3" },
+        { id: "u5", name: "КарГУ", cityId: "4" },
+      ],
+      specialties: [
+        { id: "s1", name: "Программирование", universityId: "u1" },
+        { id: "s2", name: "Экономика", universityId: "u1" },
+        { id: "s3", name: "Механика", universityId: "u2" },
+        { id: "s4", name: "Юриспруденция", universityId: "u3" },
+        { id: "s5", name: "Архитектура", universityId: "u4" },
+      ],
+      exams: [
+        { id: "e1", name: "Математика", specialtyId: "s1" },
+        { id: "e2", name: "Физика", specialtyId: "s1" },
+        { id: "e3", name: "История", specialtyId: "s2" },
+        { id: "e4", name: "Обществознание", specialtyId: "s4" },
+        { id: "e5", name: "Черчение", specialtyId: "s5" },
+      ],
     };
   },
-  methods: {
-    toggleRoadmap(id) {
-      this.expanded = this.expanded === id ? null : id;
+  computed: {
+    filteredUniversities() {
+      return this.universities.filter((u) => u.cityId === this.selectedCity);
     },
-    isExpanded(id) {
-      return this.expanded === id;
+    filteredSpecialties() {
+      return this.specialties.filter(
+        (s) => s.universityId === this.selectedUniversity
+      );
+    },
+    filteredExams() {
+      return this.exams.filter((e) => e.specialtyId === this.selectedSpecialty);
     },
   },
-  async created() {
-    this.loading = true;
-    try {
-      const response = await axios.get(
-        "https://helpai-server.vercel.app/api/professions"
-      );
-      this.professions = response.data;
-    } catch (error) {
-      console.error("Ошибка загрузки профессий:", error);
-      this.professions = [];
-    } finally {
-      this.loading = false;
-    }
+  methods: {
+    selectCity(id) {
+      this.selectedCity = id;
+      this.selectedUniversity = null;
+      this.selectedSpecialty = null;
+    },
+    selectUniversity(id) {
+      this.selectedUniversity = id;
+      this.selectedSpecialty = null;
+    },
+    selectSpecialty(id) {
+      this.selectedSpecialty = id;
+    },
+    getCityName(id) {
+      const city = this.cities.find((c) => c.id === id);
+      return city?.name || "";
+    },
+    getUniversityName(id) {
+      const univ = this.universities.find((u) => u.id === id);
+      return univ?.name || "";
+    },
+    getSpecialtyName(id) {
+      const spec = this.specialties.find((s) => s.id === id);
+      return spec?.name || "";
+    },
   },
 };
 </script>
 
 <style scoped>
-.card-text {
-  min-height: 60px;
-}
-
-.card {
-  transition: all 0.3s ease;
-}
-
-.list-group-item {
-  background-color: #f8f9fa;
+h4 {
+  margin-top: 1.5rem;
 }
 </style>

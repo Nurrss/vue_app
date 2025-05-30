@@ -41,7 +41,7 @@
         </ul>
         <div class="d-flex">
           <a
-            href="https://t.me/your_bot"
+            href="https://t.me/tanuAhacki_bot"
             target="_blank"
             class="btn btn-outline-light"
           >
